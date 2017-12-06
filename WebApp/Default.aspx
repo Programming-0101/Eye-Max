@@ -3,40 +3,74 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
     <div class="jumbotron">
-        <h1>ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
+        <h1>Eye-Max</h1>
+        <p class="lead">The leading <b>High Comfort</b> theater, offering complementary drinks and popcorn.</p>
         <p><a href="http://www.asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
     </div>
 
     <div class="row">
-        <div class="col-md-4">
-            <h2>Getting started</h2>
-            <p>
-                ASP.NET Web Forms lets you build dynamic websites using a familiar drag-and-drop, event-driven model.
-            A design surface and hundreds of controls and components let you rapidly build sophisticated, powerful UI-driven sites with data access.
-            </p>
-            <p>
-                <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301948">Learn more &raquo;</a>
-            </p>
+        <div class="col-md-3">
+            <h2><i class="glyphicon glyphicon-film"></i> Pick a Movie</h2>            
+            <p>Pick from one of our upcoming movies.</p>
+            <asp:DropDownList ID="MovieDropDown" runat="server"
+                 DataSourceID="MovieDataSource" DataTextField="Value" DataValueField="Key"
+                 AppendDataBoundItems="true" CssClass="form-control">
+                <asp:ListItem Value="0">[Select a Movie]</asp:ListItem>
+            </asp:DropDownList>
+            <asp:ObjectDataSource runat="server" ID="MovieDataSource" OldValuesParameterFormatString="original_{0}" SelectMethod="ListMovies" TypeName="EyeMaxBooking.BLL.BookingController"></asp:ObjectDataSource>
+            <asp:LinkButton ID="PickMovie" runat="server" CssClass="btn btn-primary" OnClick="PickMovie_Click">View Start Times</asp:LinkButton>
         </div>
-        <div class="col-md-4">
-            <h2>Get more libraries</h2>
-            <p>
-                NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.
-            </p>
-            <p>
-                <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301949">Learn more &raquo;</a>
-            </p>
-        </div>
-        <div class="col-md-4">
-            <h2>Web Hosting</h2>
-            <p>
-                You can easily find a web hosting company that offers the right mix of features and price for your applications.
-            </p>
-            <p>
-                <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301950">Learn more &raquo;</a>
-            </p>
-        </div>
+        <asp:Panel ID="ShowTimePanel" runat="server" CssClass="col-md-9">
+            <h2><i class="glyphicon glyphicon-time"></i> Choose a Start Time</h2>
+            <p>Select from one of the available start times.</p>
+            <asp:ListView ID="ShowTimesListView" runat="server"
+                 DataSourceID="ShowTimeDataSource" DataKeyNames="ShowingId,TheaterId"
+                 ItemType="EyeMaxBooking.Entities.QueryModels.ShowTime"
+                 OnItemCommand="ShowTimesListView_ItemCommand">
+                <LayoutTemplate><div runat="server" id="itemPlaceholder"></div></LayoutTemplate>
+                <ItemTemplate>
+                    <div class="panel panel-default" style="display: inline-block;">
+                        <div class="panel-heading">
+                            Theater #: <b><%# Item.TheaterNumber %></b>
+                        </div>
+                        <div class="panel-body">
+                            Date: <b><%# Item.StartTime.ToLongDateString() %></b><br />
+                            <br />
+                            Start Time: <b><%# Item.StartTime.ToShortTimeString() %></b><br />
+                            Length: <b><%# Math.Round(Item.Length.TotalMinutes) %></b> minutes<br />
+                            <asp:LinkButton ID="ShowTimeSelect" runat="server"
+                                 CommandName="Select" CssClass="btn btn-success">View Seating</asp:LinkButton>
+                        </div>
+                    </div>
+                </ItemTemplate>
+                <SelectedItemTemplate>
+                    <div class="panel panel-primary" style="display: inline-block;">
+                        <div class="panel-heading">
+                            Theater #: <b><%# Item.TheaterNumber %></b>
+                        </div>
+                        <div class="panel-body">
+                            Date: <b><%# Item.StartTime.ToLongDateString() %></b><br />
+                            <br />
+                            Start Time: <b><%# Item.StartTime.ToShortTimeString() %></b><br />
+                            Length: <b><%# Math.Round(Item.Length.TotalMinutes) %></b> minutes<br />
+                            <asp:LinkButton ID="ShowTimeDeselect" runat="server"
+                                 CommandName="Deselect" CssClass="btn btn-primary">Close</asp:LinkButton>
+                        </div>
+                    </div>
+                </SelectedItemTemplate>
+            </asp:ListView>
+            <asp:ObjectDataSource runat="server" ID="ShowTimeDataSource" OldValuesParameterFormatString="original_{0}" SelectMethod="GetShowTimes" TypeName="EyeMaxBooking.BLL.BookingController">
+                <SelectParameters>
+                    <asp:ControlParameter ControlID="MovieDropDown" PropertyName="SelectedValue" Name="movieId" Type="Int32"></asp:ControlParameter>
+                </SelectParameters>
+            </asp:ObjectDataSource>
+        </asp:Panel>
     </div>
+    <asp:Panel ID="SeatingPanel" runat="server" CssClass="row">
+        <div class="col-md-12">
+            <h2><i class="glyphicon glyphicon-ok-circle text-success"></i> Grab a Seat</h2>
+            <p>You can reserve multiple seats.</p>
+        </div>
+    </asp:Panel>
 
 </asp:Content>
