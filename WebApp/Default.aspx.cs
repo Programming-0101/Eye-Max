@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EyeMaxBooking.BLL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -40,6 +41,29 @@ namespace WebApp
                 ShowTimesListView.SelectedIndex = -1;
                 e.Handled = true;
             }
+        }
+
+        protected void ShowTimesListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(ShowTimesListView.SelectedIndex >= 0)
+            {
+                // Populate the SeatingListView
+                var selectedShow = ShowTimesListView.SelectedDataKey;
+                int showingId, theaterId;
+                int.TryParse(selectedShow["ShowingId"].ToString(), out showingId);
+                int.TryParse(selectedShow["TheaterId"].ToString(), out theaterId);
+
+                var controller = new BookingController();
+                var room = controller.GetAvailability(showingId, theaterId);
+                SeatingListView.GroupItemCount = room.SeatsPerRow;
+                SeatingListView.DataSource = room.Seats;
+                SeatingListView.DataBind();
+            }
+        }
+
+        protected void ReserveSeats_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

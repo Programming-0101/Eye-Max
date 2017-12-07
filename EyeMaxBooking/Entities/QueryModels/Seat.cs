@@ -16,9 +16,17 @@ namespace EyeMaxBooking.Entities.QueryModels
         public bool Reserved { get; set; }
         public override string ToString()
         {
-            return $"{Row}-{Number}";
+            return $"{Row}-{Number,2:D2}";
         }
     }
+
+    public class TheaterBookings
+    {
+        public int TheaterNumber { get; set; }
+        public int SeatsPerRow { get; set; }
+        public IEnumerable<Seat> Seats { get; set; }
+    }
+
     /// <summary>
     /// Represents seating and theater information for a specific movie.
     /// </summary>

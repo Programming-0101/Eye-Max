@@ -44,7 +44,7 @@ namespace EyeMaxBooking.BLL
         }
 
         [DataObjectMethod(DataObjectMethodType.Select)]
-        public IList<Seat> GetAvailability(int showId, int theaterId)
+        public TheaterBookings GetAvailability(int showId, int theaterId)
         {
             using (var context = new TheaterContext())
             {
@@ -72,7 +72,14 @@ namespace EyeMaxBooking.BLL
                 foreach (var spot in booked)
                     seats.Single(x => x.Row == spot.Row && x.Number == spot.Number).Reserved = true;
 
-                return seats;
+                var result = new TheaterBookings
+                {
+                    TheaterNumber = room.Number,
+                    SeatsPerRow = room.MaxSeatPerRow,
+                    Seats = seats
+                };
+
+                return result;
             }
         }
     }
