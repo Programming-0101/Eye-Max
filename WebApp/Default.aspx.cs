@@ -109,7 +109,7 @@ namespace WebApp
             {
                 var controller = new BookingController();
                 controller.ReserveShow(reservation);
-                MessageLabel.Text = $"The following seats have been reserved for you: {string.Join(", ", reservation.Seats)}";
+                MessageLabel.Text = $"The following seats have been reserved for you: <b>{string.Join("</b>, <b>", reservation.Seats)}</b>";
                 MessageLabel.CssClass = "alert alert-success";
                 MessageLabel.Attributes["role"] = "alert";
             }
