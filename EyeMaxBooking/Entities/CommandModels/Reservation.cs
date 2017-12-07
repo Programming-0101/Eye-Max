@@ -16,5 +16,9 @@ namespace EyeMaxBooking.Entities.CommandModels
     {
         public string Row { get; set; }
         public int Number { get; set; }
+        public override string ToString()
+        {
+            return $"{Row}-{Number,2:D2}";
+        }
     }
 }

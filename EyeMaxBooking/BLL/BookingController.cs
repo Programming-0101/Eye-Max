@@ -1,4 +1,5 @@
 ﻿using EyeMaxBooking.DAL;
+using EyeMaxBooking.Entities.CommandModels;
 using EyeMaxBooking.Entities.QueryModels;
 using System;
 using System.Collections.Generic;
@@ -80,6 +81,32 @@ namespace EyeMaxBooking.BLL
                 };
 
                 return result;
+            }
+        }
+
+        public void ReserveShow(MovieReservation reservation)
+        {
+            if (reservation == null)
+                throw new ArgumentNullException(nameof(reservation), $"{nameof(reservation)} is null.");
+            if (reservation.Seats.Count() == 0)
+                throw new ArgumentException("At least one seat must be selected to book a reservation.");
+            using (var context = new TheaterContext())
+            {
+                foreach(var seat in reservation.Seats)
+                {
+                    var existing = context.Reservations.SingleOrDefault(x => x.ShowingId == reservation.ShowingId && x.TheaterId == reservation.TheaterId && x.Row == seat.Row && x.SeatNumber == seat.Number);
+                    if (existing != null)
+                        throw new Exception($"Seat {seat.Row}-{seat.Number} has already been reserved.");
+                    context.Reservations.Add(new Entities.Reservation
+                    {
+                        ShowingId = reservation.ShowingId,
+                        TheaterId = reservation.TheaterId,
+                        Row = seat.Row,
+                        SeatNumber = seat.Number
+                    });
+                }
+
+                context.SaveChanges();
             }
         }
     }

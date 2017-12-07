@@ -73,6 +73,7 @@
             <p>You can reserve multiple seats.
                 <asp:LinkButton ID="ReserveSeats" runat="server"
                      CssClass="btn btn-success" OnClick="ReserveSeats_Click"><i class="glyphicon glyphicon-bookmark"></i> Reserve My Seats</asp:LinkButton>
+                <asp:Label ID="MessageLabel" runat="server" />
             </p>
             <asp:ListView ID="SeatingListView" runat="server"
                  ItemType="EyeMaxBooking.Entities.QueryModels.Seat">
